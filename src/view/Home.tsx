@@ -1,8 +1,15 @@
+import logoImage from '../assets/logoico.webp';
 
 function Home() {
   return (
     <div className="bg-gradient-to-br from-gray-900 to-gray-800 min-h-screen text-white">
+
       <header className="flex flex-col items-center justify-center h-screen p-8 text-center">
+        <img
+          src={logoImage}
+          alt="Interfaz de Aplicación Futurista para Propuestas"
+          className="w-40 h-40 rounded-full shadow-lg mb-8 transform transition duration-500 hover:scale-105"
+        />
         <h1 className="text-5xl font-bold text-blue-500 mb-4">
           Futuro de las Propuestas de Negocios
         </h1>
@@ -14,6 +21,7 @@ function Home() {
         </button>
       </header>
 
+      {/* Features Section */}
       <section className="flex flex-wrap justify-center items-center gap-8 py-20 px-6 bg-gray-900">
         <div className="max-w-sm bg-gray-800 p-6 rounded-lg shadow-lg text-center">
           <h2 className="text-2xl font-semibold text-blue-400 mb-4">Automatización Completa</h2>
@@ -35,6 +43,7 @@ function Home() {
         </div>
       </section>
 
+      {/* Call to Action */}
       <section className="flex flex-col items-center py-16 bg-gradient-to-br from-blue-900 to-blue-800">
         <h2 className="text-3xl font-bold text-white mb-4">
           ¿Listo para revolucionar tus propuestas de negocios?
@@ -46,6 +55,9 @@ function Home() {
           Registrarse
         </button>
       </section>
+      <footer className="flex justify-center items-center py-4 bg-black text-gray-600">
+        <p>&copy; 2024 Propuestas de negocios inteligentes. Todos los derechos reservados.</p>
+      </footer>
     </div>
   );
 }
