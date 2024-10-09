@@ -1,0 +1,78 @@
+import { useState } from 'react';
+
+function ResetPassword() {
+  const [showNewPassword, setShowNewPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
+  const toggleNewPasswordVisibility = () => {
+    setShowNewPassword(!showNewPassword);
+  };
+
+  const toggleConfirmPasswordVisibility = () => {
+    setShowConfirmPassword(!showConfirmPassword);
+  };
+
+  return (
+    <div className="bg-gradient-to-br from-gray-900 to-gray-800 min-h-screen text-white flex flex-col items-center justify-center">
+
+      <header className="flex flex-col items-center text-center mb-8">
+        <h1 className="text-4xl font-bold text-blue-500 mb-2">
+          Restablece tu Contraseña
+        </h1>
+        <p className="text-lg text-gray-200 mb-6 max-w-md">
+          Ingresa tu nueva contraseña para recuperar el acceso a tu cuenta.
+        </p>
+      </header>
+
+      <form className="bg-gray-800 p-8 rounded-lg shadow-lg w-full max-w-md">
+        <div className="mb-4 relative">
+          <label className="block text-gray-300 text-sm font-semibold mb-2" htmlFor="new-password">
+            Nueva Contraseña
+          </label>
+          <input
+            type={showNewPassword ? "text" : "password"}
+            id="new-password"
+            className="w-full p-3 rounded-lg bg-gray-900 text-gray-200 border border-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            placeholder="Ingresa tu nueva contraseña"
+          />
+          <button
+            type="button"
+            onClick={toggleNewPasswordVisibility}
+            className="absolute right-3 top-10 text-gray-500 hover:text-gray-300 focus:outline-none"
+          >
+            {showNewPassword ? "Ocultar" : "Ver"}
+          </button>
+        </div>
+        <div className="mb-6 relative">
+          <label className="block text-gray-300 text-sm font-semibold mb-2" htmlFor="confirm-password">
+            Confirmar Contraseña
+          </label>
+          <input
+            type={showConfirmPassword ? "text" : "password"}
+            id="confirm-password"
+            className="w-full p-3 rounded-lg bg-gray-900 text-gray-200 border border-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            placeholder="Confirma tu nueva contraseña"
+          />
+          <button
+            type="button"
+            onClick={toggleConfirmPasswordVisibility}
+            className="absolute right-3 top-10 text-gray-500 hover:text-gray-300 focus:outline-none"
+          >
+            {showConfirmPassword ? "Ocultar" : "Ver"}
+          </button>
+        </div>
+        <button
+          type="submit"
+          className="w-full bg-blue-500 hover:bg-blue-600 text-white py-3 px-4 rounded-full text-lg transition duration-300 transform hover:scale-105"
+        >
+          Restablecer Contraseña
+        </button>
+        <p className="text-center text-gray-400 mt-4">
+          ¿Ya tienes acceso? <a href="/login" className="text-blue-500 hover:underline">Inicia sesión</a>
+        </p>
+      </form>
+    </div>
+  );
+}
+
+export default ResetPassword;
