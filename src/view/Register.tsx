@@ -1,5 +1,6 @@
 import { FormEvent, useState } from 'react';
 import { handleSubmitUsers } from '../validation/autRegister';
+import { useNavigate } from 'react-router-dom';
 
 function Register() {
     const [name, setName] = useState("");
@@ -12,15 +13,17 @@ function Register() {
         setShowPassword(!showPassword);
     };
 
-    const handleSubmitRegister = async (event: FormEvent) => {
-        // const registrationSuccessful =
-        await handleSubmitUsers(event, name, email, password, isVerified, setName, setEmail, setPassword, setisVerified);
+    const navigate = useNavigate();
 
-        // if (registrationSuccessful) {
-        //   setTimeout(() => {
-        //     navigate("/liketechnology-emailVerifi");
-        //   }, 3000);
-        // }
+    const handleSubmitRegister = async (event: FormEvent) => {
+
+        const registrationSuccessful = await handleSubmitUsers(event, name, email, password, isVerified, setName, setEmail, setPassword, setisVerified);
+
+        if (registrationSuccessful) {
+            setTimeout(() => {
+                navigate("/verifi");
+            }, 3000);
+        }
     };
 
     return (

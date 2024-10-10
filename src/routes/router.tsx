@@ -5,6 +5,7 @@ import Login from "../view/Login";
 import Verification from "../view/Verification";
 import ResetPassword from "../view/ResetPasword";
 import Works from "../view/Works";
+import Emailverifi from "../view/EmailVerifi";
 
 
 const router = createBrowserRouter([
@@ -13,7 +14,8 @@ const router = createBrowserRouter([
     {path: "/login", element: <Login /> },
     {path: "/verification", element: <Verification /> },
     {path: "/password", element: <ResetPassword /> },
-    {path: "/works", element: <Works /> }
+    {path: "/works", element: <Works /> },
+    {path: "/verifi", element: <Emailverifi /> }
 ]);
 
 export default router;
