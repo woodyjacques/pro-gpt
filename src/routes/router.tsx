@@ -4,6 +4,7 @@ import Register from "../view/Register";
 import Login from "../view/Login";
 import Verification from "../view/Verification";
 import ResetPassword from "../view/ResetPasword";
+import Works from "../view/Works";
 
 
 const router = createBrowserRouter([
@@ -12,6 +13,7 @@ const router = createBrowserRouter([
     {path: "/login", element: <Login /> },
     {path: "/verification", element: <Verification /> },
     {path: "/password", element: <ResetPassword /> },
+    {path: "/works", element: <Works /> }
 ]);
 
 export default router;

@@ -1,4 +1,13 @@
-import { useState } from 'react';
+
+import { useNavigate } from "react-router-dom";
+import {useEffect, useState } from "react";
+import { handleSubmitVerifi } from "../validation/autSesion";
+// import { handleSubmitUserSesion, handleSubmitVerifi } from "../../validation/authSesion";
+
+export interface UserData {
+  name: string;
+  email: string;
+}
 
 function Login() {
   const [showPassword, setShowPassword] = useState(false);
@@ -6,6 +15,50 @@ function Login() {
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };
+
+  const navigate = useNavigate();
+
+  const token = localStorage.getItem("ACCESS_TOKEN");
+
+  useEffect(() => {
+    if (token) {
+      navigate("/works");
+    }
+  }, [token, navigate]);
+
+  if (token) {
+    return null;
+  }
+
+  const urlParams = new URLSearchParams(window.location.search);
+  const tokens = urlParams.get("token");
+
+  async function verificarTokens(tokens: any) {
+    if (tokens) {
+      const tokenData = await handleSubmitVerifi(tokens);
+
+      if (tokenData) {
+        const { token, name, email } = tokenData;
+
+        localStorage.setItem("ACCESS_TOKEN", token);
+
+        const sessionData: UserData = {
+          name, email
+        };
+
+        localStorage.setItem(
+          "USER_SESSION",
+          JSON.stringify(sessionData)
+        );
+
+        setTimeout(() => {
+          navigate("/works");
+        }, 1000);
+      }
+    }
+  }
+
+  verificarTokens(tokens);
 
   return (
     <div className="bg-gradient-to-br from-gray-900 to-gray-800 min-h-screen text-white flex flex-col items-center justify-center">

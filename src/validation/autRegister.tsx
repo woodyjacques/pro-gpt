@@ -2,8 +2,7 @@ import { FormEvent } from "react";
 import { mostrarMensaje } from "../Components/toast";
 import axios from "axios";
 
-// const api = "https://backend-like.vercel.app";
-const api = import.meta.env.VITE_APP_API_URL;
+const api = "https://pro-gpt-backend.vercel.app";
 
 export const handleSubmitUsers = async (
   event: FormEvent,
