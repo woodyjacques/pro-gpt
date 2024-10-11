@@ -1,5 +1,22 @@
+import { FormEvent, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { handleSubmitEmail } from "../validation/autRegister";
 
 function Verification() {
+    const [email, setEmail] = useState("");
+
+    const navigate = useNavigate();
+
+    const handleSubmit = async (event: FormEvent) => {
+        const emailData = await handleSubmitEmail(event, email, setEmail);
+
+        if (emailData) {
+            setTimeout(() => {
+                navigate("/password");
+            }, 3000);
+        }
+    };
+
     return (
         <div className="bg-gradient-to-br from-gray-900 to-gray-800 min-h-screen text-white flex flex-col items-center justify-center">
 
@@ -12,14 +29,24 @@ function Verification() {
                 </p>
             </header>
 
-            <form className="bg-gray-800 p-8 rounded-lg shadow-lg w-full max-w-md">
+            <form onSubmit={handleSubmit} className="bg-gray-800 p-8 rounded-lg shadow-lg w-full max-w-md">
                 <div className="mb-6">
+                    <p
+                        id="MensajeErr"
+                        className=" hidden text-red-500 text-sm font-medium rounded-lg text-center"
+                    ></p>
+                    <p
+                        id="MensajeAct"
+                        className=" hidden text-green-500 text-sm font-medium rounded-lg text-center"
+                    ></p>
                     <label className="block text-gray-300 text-sm font-semibold mb-2" htmlFor="email">
                         Correo
                     </label>
                     <input
                         type="email"
                         id="email"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
                         className="w-full p-3 rounded-lg bg-gray-900 text-gray-200 border border-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
                         placeholder="Ingresa tu correo"
                     />

@@ -1,4 +1,11 @@
-import { useState } from 'react';
+import { FormEvent, useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { handleSubmitPassUpEmail } from '../validation/autRegister';
+
+export interface UserData {
+  name: string;
+  email: string;
+}
 
 function ResetPassword() {
   const [showNewPassword, setShowNewPassword] = useState(false);
@@ -10,6 +17,44 @@ function ResetPassword() {
 
   const toggleConfirmPasswordVisibility = () => {
     setShowConfirmPassword(!showConfirmPassword);
+  };
+
+  const [password, setPassword] = useState("");
+  const [verPassword, setVerPassword] = useState("");
+
+  const navigate = useNavigate();
+
+  const urlParams = new URLSearchParams(window.location.search);
+  const token = urlParams.get("token");
+
+  useEffect(() => {
+    if (!token) {
+      navigate("/");
+    }
+  }, [token, navigate]);
+
+  if (!token) {
+    return null;
+  }
+
+  const handleSubmitPassEmail = async (event: FormEvent) => {
+    const emailData = await handleSubmitPassUpEmail(event, password, verPassword, setPassword, setVerPassword);
+
+    if (emailData) {
+      const { tokens, name, email } = emailData;
+      localStorage.setItem("ACCESS_TOKEN", tokens);
+      const sessionData: UserData = {
+        name, email
+      };
+
+      localStorage.setItem(
+        "USER_SESSION",
+        JSON.stringify(sessionData)
+      );
+      setTimeout(() => {
+        navigate("/works");
+      }, 3000);
+    }
   };
 
   return (
@@ -24,7 +69,7 @@ function ResetPassword() {
         </p>
       </header>
 
-      <form className="bg-gray-800 p-8 rounded-lg shadow-lg w-full max-w-md">
+      <form onSubmit={handleSubmitPassEmail} className="bg-gray-800 p-8 rounded-lg shadow-lg w-full max-w-md">
         <div className="mb-4 relative">
           <label className="block text-gray-300 text-sm font-semibold mb-2" htmlFor="new-password">
             Nueva Contraseña

@@ -1,8 +1,7 @@
 
 import { useNavigate } from "react-router-dom";
-import {useEffect, useState } from "react";
-import { handleSubmitVerifi } from "../validation/autSesion";
-// import { handleSubmitUserSesion, handleSubmitVerifi } from "../../validation/authSesion";
+import { FormEvent, useEffect, useState } from "react";
+import { handleSubmitUserSesion, handleSubmitVerifi } from "../validation/autSesion";
 
 export interface UserData {
   name: string;
@@ -10,6 +9,8 @@ export interface UserData {
 }
 
 function Login() {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
 
   const togglePasswordVisibility = () => {
@@ -60,9 +61,32 @@ function Login() {
 
   verificarTokens(tokens);
 
+  const handleSubmitSesion = async (event: FormEvent) => {
+    const sesionData = await handleSubmitUserSesion(event, email, password, setEmail, setPassword);
+
+    if (sesionData) {
+      const { token, name, email } = sesionData;
+
+      localStorage.setItem("ACCESS_TOKEN", token);
+
+      const sessionData: UserData = {
+        name, email
+      };
+
+      localStorage.setItem(
+        "USER_SESSION",
+        JSON.stringify(sessionData)
+      );
+
+      setTimeout(() => {
+        navigate("/works");
+      }, 3000);
+    }
+  };
+
   return (
     <div className="bg-gradient-to-br from-gray-900 to-gray-800 min-h-screen text-white flex flex-col items-center justify-center">
-      
+
       <header className="flex flex-col items-center text-center mb-8">
         <h1 className="text-4xl font-bold text-blue-500 mb-2">
           Inicia Sesión
@@ -72,7 +96,17 @@ function Login() {
         </p>
       </header>
 
-      <form className="bg-gray-800 p-8 rounded-lg shadow-lg w-full max-w-md">
+      <form onSubmit={handleSubmitSesion} className="bg-gray-800 p-8 rounded-lg shadow-lg w-full max-w-md">
+
+        <p
+          id="MensajeErrUsuario"
+          className=" hidden text-red-500 text-sm font-medium rounded-lg text-center"
+        ></p>
+        <p
+          id="MensajeActUsuario"
+          className=" hidden text-green-500 text-sm font-medium rounded-lg text-center"
+        ></p>
+
         <div className="mb-4">
           <label className="block text-gray-300 text-sm font-semibold mb-2" htmlFor="email">
             Correo
@@ -80,6 +114,8 @@ function Login() {
           <input
             type="email"
             id="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
             className="w-full p-3 rounded-lg bg-gray-900 text-gray-200 border border-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
             placeholder="Ingresa tu correo"
           />
@@ -91,6 +127,8 @@ function Login() {
           <input
             type={showPassword ? "text" : "password"}
             id="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
             className="w-full p-3 rounded-lg bg-gray-900 text-gray-200 border border-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
             placeholder="Ingresa tu contraseña"
           />

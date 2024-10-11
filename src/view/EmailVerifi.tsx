@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 function Emailverifi() {
     return (
         <div>
-            <section className="bg-gradient-to-br from-blue-900 to-blue-800">
+            <section className="">
                 <div className="py-8 px-4 mx-auto max-w-screen-xl text-center lg:py-16 z-10 relative">
                     <h1 className="mb-4 text-4xl font-extrabold tracking-tight leading-none md:text-5xl lg:text-6xl text-white">
                         Verificación
