@@ -1,4 +1,4 @@
-import { FormEvent, useState } from 'react';
+import { FormEvent, useEffect, useState } from 'react';
 import { handleSubmitUsers } from '../validation/autRegister';
 import { useNavigate } from 'react-router-dom';
 
@@ -14,6 +14,18 @@ function Register() {
     };
 
     const navigate = useNavigate();
+
+    const token = localStorage.getItem("ACCESS_TOKEN");
+
+    useEffect(() => {
+        if (token) {
+            navigate("/works");
+        }
+    }, [token, navigate]);
+
+    if (token) {
+        return null;
+    }
 
     const handleSubmitRegister = async (event: FormEvent) => {
 
