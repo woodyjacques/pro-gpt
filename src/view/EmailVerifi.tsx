@@ -1,6 +1,20 @@
-import { Link } from "react-router-dom";
+import { useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
 
 function Emailverifi() {
+    const navigate = useNavigate();
+    const token = localStorage.getItem("ACCESS_TOKEN");
+
+    useEffect(() => {
+        if (token) {
+            navigate("/works");
+        }
+    }, [token, navigate]);
+
+    if (token) {
+        return null;
+    }
+
     return (
         <div>
             <section className="">
@@ -9,10 +23,13 @@ function Emailverifi() {
                         Verificación
                     </h1>
                     <p className="mb-8 text-lg font-normal lg:text-xl sm:px-16 lg:px-48 text-gray-200">
-                        Revise su correo electónico que le hemos enviado un link.
+                        Revise su correo electrónico que le hemos enviado un link.
                     </p>
                     <Link to="/login">
-                        <button className="text-white bottom-2.5 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 bg-blue-600 hover:bg-blue-700 focus:ring-blue-800">
+                        <button
+                            type="submit"
+                            className="bg-blue-500 hover:bg-blue-700 text-white py-3 px-4 rounded-full text-lg transition duration-300 transform hover:scale-105"
+                        >
                             Ir a sesión
                         </button>
                     </Link>

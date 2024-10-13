@@ -8,13 +8,13 @@ function Register() {
     const [password, setPassword] = useState("");
     const [isVerified, setisVerified] = useState(false);
     const [showPassword, setShowPassword] = useState(false);
+    const [isLoading, setIsLoading] = useState(false); 
 
     const togglePasswordVisibility = () => {
         setShowPassword(!showPassword);
     };
 
     const navigate = useNavigate();
-
     const token = localStorage.getItem("ACCESS_TOKEN");
 
     useEffect(() => {
@@ -28,6 +28,8 @@ function Register() {
     }
 
     const handleSubmitRegister = async (event: FormEvent) => {
+        event.preventDefault();
+        setIsLoading(true); 
 
         const registrationSuccessful = await handleSubmitUsers(event, name, email, password, isVerified, setName, setEmail, setPassword, setisVerified);
 
@@ -36,6 +38,8 @@ function Register() {
                 navigate("/verifi");
             }, 3000);
         }
+
+        setIsLoading(false);
     };
 
     return (
@@ -47,14 +51,9 @@ function Register() {
                 Únete a la plataforma de propuestas del futuro y empieza a optimizar tu tiempo y esfuerzo.
             </p>
             <form onSubmit={handleSubmitRegister} className="bg-gray-800 p-8 rounded-lg shadow-lg w-full max-w-md">
-                <p
-                    id="MensajeErrUsuario"
-                    className=" hidden text-red-500 text-sm font-medium rounded-lg text-center"
-                ></p>
-                <p
-                    id="MensajeActUsuario"
-                    className=" hidden text-green-500 text-sm font-medium rounded-lg text-center"
-                ></p>
+                <p id="MensajeErrUsuario" className="hidden text-red-500 text-sm font-medium rounded-lg text-center"></p>
+                <p id="MensajeActUsuario" className="hidden text-green-500 text-sm font-medium rounded-lg text-center"></p>
+
                 <div className="mb-4">
                     <label className="block text-gray-300 text-sm font-semibold mb-2" htmlFor="name">
                         Nombre
@@ -103,9 +102,10 @@ function Register() {
                 </div>
                 <button
                     type="submit"
-                    className="w-full bg-blue-500 hover:bg-blue-600 text-white py-3 px-4 rounded-full text-lg transition duration-300 transform hover:scale-105"
+                    className="w-full bg-blue-500 hover:bg-blue-700 text-white py-3 px-4 rounded-full text-lg transition duration-300 transform hover:scale-105"
+                    disabled={isLoading} 
                 >
-                    Registrarse
+                    {isLoading ? "Registrando..." : "Registrarse"} 
                 </button>
                 <p className="text-center text-gray-400 mt-4">
                     ¿Ya tienes una cuenta? <a href="/login" className="text-blue-500 hover:underline">Inicia sesión</a>

@@ -1,6 +1,23 @@
+import { useNavigate } from 'react-router-dom';
 import logoImage from '../assets/logoico.webp';
+import { useEffect } from 'react';
 
 function Home() {
+
+  const navigate = useNavigate();
+
+  const token = localStorage.getItem("ACCESS_TOKEN");
+
+  useEffect(() => {
+    if (token) {
+      navigate("/works");
+    }
+  }, [token, navigate]);
+
+  if (token) {
+    return null;
+  }
+
   return (
     <div className="bg-gradient-to-br from-gray-900 to-gray-800 min-h-screen text-white">
 
@@ -17,7 +34,7 @@ function Home() {
           Crea propuestas personalizadas con inteligencia artificial en cuestión de segundos. Aumenta tu productividad y lleva tus negocios al siguiente nivel.
         </p>
         <a href="/login">
-          <button className="bg-blue-500 hover:bg-blue-600 text-white py-3 px-6 rounded-full text-lg transition duration-300 transform hover:scale-105">
+          <button className="bg-blue-500 hover:bg-blue-700 text-white py-3 px-6 rounded-full text-lg transition duration-300 transform hover:scale-105">
             Comienza Ahora
           </button>
         </a>
@@ -52,7 +69,7 @@ function Home() {
           Únete a la plataforma de propuestas del futuro y empieza a optimizar tu tiempo y esfuerzo.
         </p>
         <a href="/login">
-          <button className="bg-blue-500 hover:bg-blue-600 text-white py-3 px-8 rounded-full text-lg transition duration-300 transform hover:scale-105">
+          <button className="bg-blue-500 hover:bg-blue-700 text-white py-3 px-8 rounded-full text-lg transition duration-300 transform hover:scale-105">
             Registrarse
           </button>
         </a>

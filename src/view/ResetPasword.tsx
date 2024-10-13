@@ -10,6 +10,7 @@ export interface UserData {
 function ResetPassword() {
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [isLoading, setIsLoading] = useState(false); 
 
   const toggleNewPasswordVisibility = () => {
     setShowNewPassword(!showNewPassword);
@@ -23,7 +24,6 @@ function ResetPassword() {
   const [verPassword, setVerPassword] = useState("");
 
   const navigate = useNavigate();
-
   const urlParams = new URLSearchParams(window.location.search);
   const token = urlParams.get("token");
 
@@ -38,6 +38,9 @@ function ResetPassword() {
   }
 
   const handleSubmitPassEmail = async (event: FormEvent) => {
+    event.preventDefault();
+    setIsLoading(true); 
+
     const emailData = await handleSubmitPassUpEmail(event, password, verPassword, setPassword, setVerPassword);
 
     if (emailData) {
@@ -47,19 +50,17 @@ function ResetPassword() {
         name, email
       };
 
-      localStorage.setItem(
-        "USER_SESSION",
-        JSON.stringify(sessionData)
-      );
+      localStorage.setItem("USER_SESSION", JSON.stringify(sessionData));
       setTimeout(() => {
         navigate("/works");
       }, 3000);
     }
+
+    setIsLoading(false); 
   };
 
   return (
     <div className="bg-gradient-to-br from-gray-900 to-gray-800 min-h-screen text-white flex flex-col items-center justify-center">
-
       <header className="flex flex-col items-center text-center mb-8">
         <h1 className="text-4xl font-bold text-blue-500 mb-2">
           Restablece tu Contraseña
@@ -77,6 +78,8 @@ function ResetPassword() {
           <input
             type={showNewPassword ? "text" : "password"}
             id="new-password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
             className="w-full p-3 rounded-lg bg-gray-900 text-gray-200 border border-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
             placeholder="Ingresa tu nueva contraseña"
           />
@@ -95,6 +98,8 @@ function ResetPassword() {
           <input
             type={showConfirmPassword ? "text" : "password"}
             id="confirm-password"
+            value={verPassword}
+            onChange={(e) => setVerPassword(e.target.value)}
             className="w-full p-3 rounded-lg bg-gray-900 text-gray-200 border border-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
             placeholder="Confirma tu nueva contraseña"
           />
@@ -108,9 +113,10 @@ function ResetPassword() {
         </div>
         <button
           type="submit"
-          className="w-full bg-blue-500 hover:bg-blue-600 text-white py-3 px-4 rounded-full text-lg transition duration-300 transform hover:scale-105"
+          className="w-full bg-blue-500 hover:bg-blue-700 text-white py-3 px-4 rounded-full text-lg transition duration-300 transform hover:scale-105"
+          disabled={isLoading}
         >
-          Restablecer Contraseña
+          {isLoading ? "Restableciendo..." : "Restablecer Contraseña"} 
         </button>
         <p className="text-center text-gray-400 mt-4">
           ¿Ya tienes acceso? <a href="/login" className="text-blue-500 hover:underline">Inicia sesión</a>

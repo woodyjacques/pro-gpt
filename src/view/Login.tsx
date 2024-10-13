@@ -1,4 +1,3 @@
-
 import { useNavigate } from "react-router-dom";
 import { FormEvent, useEffect, useState } from "react";
 import { handleSubmitUserSesion, handleSubmitVerifi } from "../validation/autSesion";
@@ -12,13 +11,13 @@ function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };
 
   const navigate = useNavigate();
-
   const token = localStorage.getItem("ACCESS_TOKEN");
 
   useEffect(() => {
@@ -44,13 +43,11 @@ function Login() {
         localStorage.setItem("ACCESS_TOKEN", token);
 
         const sessionData: UserData = {
-          name, email
+          name,
+          email,
         };
 
-        localStorage.setItem(
-          "USER_SESSION",
-          JSON.stringify(sessionData)
-        );
+        localStorage.setItem("USER_SESSION", JSON.stringify(sessionData));
 
         setTimeout(() => {
           navigate("/works");
@@ -62,6 +59,9 @@ function Login() {
   verificarTokens(tokens);
 
   const handleSubmitSesion = async (event: FormEvent) => {
+    event.preventDefault();
+    setIsLoading(true);
+
     const sesionData = await handleSubmitUserSesion(event, email, password, setEmail, setPassword);
 
     if (sesionData) {
@@ -70,42 +70,32 @@ function Login() {
       localStorage.setItem("ACCESS_TOKEN", token);
 
       const sessionData: UserData = {
-        name, email
+        name,
+        email,
       };
 
-      localStorage.setItem(
-        "USER_SESSION",
-        JSON.stringify(sessionData)
-      );
+      localStorage.setItem("USER_SESSION", JSON.stringify(sessionData));
 
       setTimeout(() => {
         navigate("/works");
       }, 3000);
     }
+
+    setIsLoading(false);
   };
 
   return (
     <div className="bg-gradient-to-br from-gray-900 to-gray-800 min-h-screen text-white flex flex-col items-center justify-center">
-
       <header className="flex flex-col items-center text-center mb-8">
-        <h1 className="text-4xl font-bold text-blue-500 mb-2">
-          Inicia Sesión
-        </h1>
+        <h1 className="text-4xl font-bold text-blue-500 mb-2">Inicia Sesión</h1>
         <p className="text-lg text-gray-200 mb-6 max-w-md">
           Ingresa a tu cuenta y comienza a crear propuestas personalizadas en segundos.
         </p>
       </header>
 
       <form onSubmit={handleSubmitSesion} className="bg-gray-800 p-8 rounded-lg shadow-lg w-full max-w-md">
-
-        <p
-          id="MensajeErrUsuario"
-          className=" hidden text-red-500 text-sm font-medium rounded-lg text-center"
-        ></p>
-        <p
-          id="MensajeActUsuario"
-          className=" hidden text-green-500 text-sm font-medium rounded-lg text-center"
-        ></p>
+        <p id="MensajeErrUsuario" className="hidden text-red-500 text-sm font-medium rounded-lg text-center"></p>
+        <p id="MensajeActUsuario" className="hidden text-green-500 text-sm font-medium rounded-lg text-center"></p>
 
         <div className="mb-4">
           <label className="block text-gray-300 text-sm font-semibold mb-2" htmlFor="email">
@@ -147,9 +137,10 @@ function Login() {
         </div>
         <button
           type="submit"
-          className="w-full bg-blue-500 hover:bg-blue-600 text-white py-3 px-4 rounded-full text-lg transition duration-300 transform hover:scale-105"
+          className="w-full bg-blue-500 hover:bg-blue-700 text-white py-3 px-4 rounded-full text-lg transition duration-300 transform hover:scale-105"
+          disabled={isLoading}
         >
-          Iniciar Sesión
+          {isLoading ? "Iniciando..." : "Iniciar Sesión"} 
         </button>
         <p className="text-center text-gray-400 mt-4">
           ¿No tienes una cuenta? <a href="/register" className="text-blue-500 hover:underline">Regístrate</a>

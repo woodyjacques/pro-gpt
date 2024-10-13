@@ -6,6 +6,8 @@ import Verification from "../view/Verification";
 import ResetPassword from "../view/ResetPasword";
 import Works from "../view/Works";
 import Emailverifi from "../view/EmailVerifi";
+import Header from "../Components/header";
+import Generate from "../view/Generate";
 
 
 const router = createBrowserRouter([
@@ -14,8 +16,16 @@ const router = createBrowserRouter([
     {path: "/login", element: <Login /> },
     {path: "/verification", element: <Verification /> },
     {path: "/password", element: <ResetPassword /> },
-    {path: "/works", element: <Works /> },
-    {path: "/verifi", element: <Emailverifi /> }
+    {path: "/verifi", element: <Emailverifi /> },
+
+    {
+        path: "/",
+        element: <Header />,
+        children: [
+          { path: "/Works", element: <Works /> },
+          { path: "/Generate", element: <Generate /> },
+        ]
+    },
 ]);
 
 export default router;
