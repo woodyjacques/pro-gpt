@@ -10,7 +10,7 @@ function Home() {
 
   useEffect(() => {
     if (token) {
-      navigate("/works");
+      navigate("/generate");
     }
   }, [token, navigate]);
 

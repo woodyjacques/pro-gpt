@@ -22,8 +22,8 @@ const router = createBrowserRouter([
         path: "/",
         element: <Header />,
         children: [
-          { path: "/Works", element: <Works /> },
           { path: "/Generate", element: <Generate /> },
+          { path: "/Works", element: <Works /> }
         ]
     },
 ]);

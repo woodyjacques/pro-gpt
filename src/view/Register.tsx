@@ -19,7 +19,7 @@ function Register() {
 
     useEffect(() => {
         if (token) {
-            navigate("/works");
+            navigate("/generate");
         }
     }, [token, navigate]);
 

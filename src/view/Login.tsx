@@ -22,7 +22,7 @@ function Login() {
 
   useEffect(() => {
     if (token) {
-      navigate("/works");
+      navigate("/generate");
     }
   }, [token, navigate]);
 
@@ -50,7 +50,7 @@ function Login() {
         localStorage.setItem("USER_SESSION", JSON.stringify(sessionData));
 
         setTimeout(() => {
-          navigate("/works");
+          navigate("/generate");
         }, 1000);
       }
     }
@@ -77,7 +77,7 @@ function Login() {
       localStorage.setItem("USER_SESSION", JSON.stringify(sessionData));
 
       setTimeout(() => {
-        navigate("/works");
+        navigate("/generate");
       }, 3000);
     }
 

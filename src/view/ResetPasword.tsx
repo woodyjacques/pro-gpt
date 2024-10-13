@@ -52,7 +52,7 @@ function ResetPassword() {
 
       localStorage.setItem("USER_SESSION", JSON.stringify(sessionData));
       setTimeout(() => {
-        navigate("/works");
+        navigate("/generate");
       }, 3000);
     }
 
