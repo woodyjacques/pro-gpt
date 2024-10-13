@@ -38,9 +38,6 @@ function Works() {
           <thead className="text-xs text-gray-400 uppercase bg-gray-700">
             <tr>
               <th scope="col" className="px-6 py-3">
-                Código
-              </th>
-              <th scope="col" className="px-6 py-3">
                 Nombre
               </th>
               <th scope="col" className="px-6 py-3">

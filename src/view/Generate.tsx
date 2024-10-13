@@ -22,6 +22,10 @@ function Generate() {
 
     const toggleModal = () => {
         setIsOpen(!isOpen);
+        setName("");
+        setDescription("");
+        setBudget("");
+        setObjetive("");
     };
 
     const [name, setName] = useState("");
@@ -31,6 +35,7 @@ function Generate() {
     const [isLoading, setIsLoading] = useState(false);
 
     const handleSubmitGpt = async (event: FormEvent) => {
+        event.preventDefault();
         setIsLoading(true);
         await handleSubmitChat(event, name, description, budget, objetive, setName, setDescription, setBudget, setObjetive);
         setIsLoading(false);
@@ -46,10 +51,10 @@ function Generate() {
             <div className="relative flex-grow mb-4 rounded-lg bg-gray-800">
                 <div className="absolute top-2 right-2 flex space-x-2 z-10">
                     <button className="transition duration-300 transform hover:scale-105 bg-green-500 text-white py-0.5 px-2 text-sm rounded hover:bg-green-700">
-                        Descargar por pdf
+                        Descargar
                     </button>
                     <button className="transition duration-300 transform hover:scale-105 bg-blue-500 text-white py-0.5 px-2 text-sm rounded hover:bg-blue-700">
-                        Enviar por correo
+                        Enviar
                     </button>
                     <button className="transition duration-300 transform hover:scale-105 bg-yellow-500 text-white py-0.5 px-2 text-sm rounded hover:bg-yellow-700">
                         Copiar
@@ -127,7 +132,7 @@ function Generate() {
                                             onChange={(e) => setBudget(e.target.value)} type="text" className="bg-gray-900 border border-gray-700 text-white text-sm rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 block w-full p-2.5 placeholder-gray-400" placeholder="Presupuesto en USD" />
                                     </div>
                                     <div>
-                                        <label className="block mb-2 text-sm font-medium text-white">Objetivos del Cliente</label>
+                                        <label className="block mb-2 text-sm font-medium text-white">Objetivos del proyecto</label>
                                         <textarea value={objetive}
                                             onChange={(e) => setObjetive(e.target.value)} className="bg-gray-900 border border-gray-700 text-white text-sm rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 block w-full p-2.5 placeholder-gray-400" placeholder="Objetivos del proyecto..."></textarea>
                                     </div>

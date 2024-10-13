@@ -46,7 +46,7 @@ export const handleSubmitChat = async (
     }
 
     try {
-        const responseRegister = await axios.post(`${api}/progpt`, { name, description, budget, objetive });
+        const responseRegister = await axios.post(`${api}/chat-gpt`, { name, description, budget, objetive });
         const mensaje = responseRegister.data.message;
         mostrarMensaje(mensaje, MensajeAct);
         resetForm();
