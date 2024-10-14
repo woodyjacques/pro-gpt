@@ -75,7 +75,7 @@ export const Modal: React.FC<ModalProps> = ({
           <button
             onClick={onClose}
             type="button"
-            className="transition duration-300 transform hover:scale-105 text-white bg-blue-500 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-800 font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center mr-2"
+            className="transition duration-300 transform hover:scale-105 text-black bg-gray-300 hover:bg-gray-400 focus:ring-4 focus:outline-none focus:ring-blue-800 font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center mr-2"
           >
             No, cancelar
           </button>

@@ -1,6 +1,7 @@
 import { FormEvent, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { handleSubmitChat } from "../validation/generate";
+import jsPDF from "jspdf";
 
 function Generate() {
 
@@ -33,12 +34,79 @@ function Generate() {
     const [budget, setBudget] = useState("");
     const [objetive, setObjetive] = useState("");
     const [isLoading, setIsLoading] = useState(false);
+    const [displayedText, setDisplayedText] = useState("");
+    const [recipientEmail, setRecipientEmail] = useState("");
+    const [isSendModalOpen, setIsSendModalOpen] = useState(false);
+
+    const animateText = (text: string) => {
+        setDisplayedText("");
+        let index = 0;
+        const interval = setInterval(() => {
+            setDisplayedText((prev) => prev + text[index]);
+            index++;
+            if (index === text.length) {
+                clearInterval(interval);
+            }
+        }, 50);
+    };
 
     const handleSubmitGpt = async (event: FormEvent) => {
         event.preventDefault();
         setIsLoading(true);
-        await handleSubmitChat(event, name, description, budget, objetive, setName, setDescription, setBudget, setObjetive);
+        await handleSubmitChat(event, name, description, budget, objetive, setName, setDescription, setBudget, setObjetive, animateText);
         setIsLoading(false);
+        setIsOpen(!isOpen);
+    };
+
+    const handleCopy = () => {
+        navigator.clipboard.writeText(displayedText).then(() => {
+            alert("Texto copiado al portapapeles");
+        }).catch((error) => {
+            console.error("Error al copiar el texto:", error);
+        });
+    };
+
+    const handleDownloadPDF = () => {
+        const doc = new jsPDF();
+        const pageWidth = doc.internal.pageSize.width;
+        const margin = 10;
+        const textWidth = pageWidth - 2 * margin;
+
+        const text = displayedText || "No hay texto para descargar";
+
+        const lines = doc.splitTextToSize(text, textWidth);
+
+        doc.setFontSize(14);
+        doc.text("Propuesta de Negocio", margin, 20);
+
+        doc.setFontSize(12);
+        let yOffset = 30;
+
+        lines.forEach((line: any) => {
+            if (yOffset > doc.internal.pageSize.height - margin) {
+                doc.addPage();
+                yOffset = margin;
+            }
+            doc.text(line, margin, yOffset);
+            yOffset += 10;
+        });
+
+        doc.save("propuesta.pdf");
+    };
+
+    const openSendModal = () => {
+        setIsSendModalOpen(true);
+    };
+
+    const closeSendModal = () => {
+        setIsSendModalOpen(false);
+        setRecipientEmail("");
+    };
+
+    const handleSendEmail = (event: FormEvent) => {
+        event.preventDefault();
+        alert(`Enviando propuesta a ${recipientEmail} con el siguiente contenido:\n${displayedText}`);
+        closeSendModal();
     };
 
     return (
@@ -50,21 +118,87 @@ function Generate() {
 
             <div className="relative flex-grow mb-4 rounded-lg bg-gray-800">
                 <div className="absolute top-2 right-2 flex space-x-2 z-10">
-                    <button className="transition duration-300 transform hover:scale-105 bg-green-500 text-white py-0.5 px-2 text-sm rounded hover:bg-green-700">
+                    <button
+                        onClick={handleDownloadPDF}
+                        className="transition duration-300 transform hover:scale-105 bg-green-500 text-white py-0.5 px-2 text-sm rounded hover:bg-green-700"
+                    >
                         Descargar
                     </button>
-                    <button className="transition duration-300 transform hover:scale-105 bg-blue-500 text-white py-0.5 px-2 text-sm rounded hover:bg-blue-700">
+                    <button
+                        onClick={openSendModal}
+                        className="transition duration-300 transform hover:scale-105 bg-blue-500 text-white py-0.5 px-2 text-sm rounded hover:bg-blue-700"
+                    >
                         Enviar
                     </button>
-                    <button className="transition duration-300 transform hover:scale-105 bg-yellow-500 text-white py-0.5 px-2 text-sm rounded hover:bg-yellow-700">
+                    <button onClick={handleCopy} className="transition duration-300 transform hover:scale-105 bg-yellow-500 text-white py-0.5 px-2 text-sm rounded hover:bg-yellow-700">
                         Copiar
                     </button>
                 </div>
                 <textarea
                     className="w-full h-full p-4 pt-12 text-white bg-transparent border-none resize-none outline-none"
-                    placeholder=" Tus propuesta se veran aquí..."
+                    placeholder="Tus propuestas se verán aquí..."
+                    value={displayedText}
+                    readOnly
                 ></textarea>
             </div>
+
+            {isSendModalOpen && (
+                <div className="bg-gray-100 bg-opacity-50 formPer fixed top-0 left-0 right-0 z-50 w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full flex justify-center items-center">
+                    <div className="relative w-full max-w-md max-h-full">
+                        <div className="relative bg-gray-900 rounded-lg shadow-lg p-6">
+                            <button
+                                type="button"
+                                className="absolute top-3 right-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ml-auto inline-flex justify-center items-center"
+                                onClick={closeSendModal}
+                            >
+                                <svg
+                                    className="w-3 h-3"
+                                    aria-hidden="true"
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    fill="none"
+                                    viewBox="0 0 14 14"
+                                >
+                                    <path
+                                        stroke="currentColor"
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                        strokeWidth="2"
+                                        d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"
+                                    />
+                                </svg>
+                                <span className="sr-only">Cerrar modal</span>
+                            </button>
+                            <h3 className="text-xl text-white font-bold mb-4">Enviar Propuesta</h3>
+                            <form onSubmit={handleSendEmail} className="space-y-4">
+                                <div>
+                                    <label className="block text-sm font-medium text-white">Correo del destinatario</label>
+                                    <input
+                                        type="email"
+                                        required
+                                        value={recipientEmail}
+                                        onChange={(e) => setRecipientEmail(e.target.value)}
+                                        className="bg-gray-900 border border-gray-700 text-white text-sm rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 block w-full p-2.5 placeholder-gray-400"
+                                        placeholder="ejemplo@correo.com"
+                                    />
+                                </div>
+                                <div>
+                                    <label className="block text-sm font-medium text-white">Contenido de la propuesta</label>
+                                    <textarea
+                                        value={displayedText}
+                                        readOnly
+                                        className="bg-gray-900 border border-gray-700 text-white text-sm rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 block w-full p-2.5 placeholder-gray-400 resize-none"
+                                        rows={5}
+                                    ></textarea>
+                                </div>
+                                <div className="flex justify-end space-x-2">
+                                    <button type="button" onClick={closeSendModal} className="px-4 py-2 bg-gray-300 rounded-lg hover:bg-gray-400 transition duration-300 transform hover:scale-105">Cancelar</button>
+                                    <button type="submit" className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition duration-300 transform hover:scale-105">Enviar</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            )}
 
             <div className="flex justify-center mb-4">
                 <button onClick={toggleModal} className="transition duration-300 transform hover:scale-105 w-full bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700">
@@ -74,7 +208,6 @@ function Generate() {
             {isOpen && (
                 <div
                     id="authentication-modal"
-                    aria-hidden="true"
                     className="bg-gray-100 bg-opacity-50 formPer fixed top-0 left-0 right-0 z-50 w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full flex justify-center items-center"
                 >
                     <div className="relative w-full max-w-md max-h-full">

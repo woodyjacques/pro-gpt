@@ -12,11 +12,11 @@ export const handleSubmitChat = async (
     setName: React.Dispatch<React.SetStateAction<string>>,
     setDescription: React.Dispatch<React.SetStateAction<string>>,
     setBudget: React.Dispatch<React.SetStateAction<string>>,
-    setObjetive: React.Dispatch<React.SetStateAction<string>>
+    setObjetive: React.Dispatch<React.SetStateAction<string>>,
+    animateText: (text: string) => void 
 ) => {
     event.preventDefault();
     const MensajeErr = document.getElementById("MensajeErrCat");
-    const MensajeAct = document.getElementById("MensajeCat");
 
     if (name === "") {
         mostrarMensaje("Ingrese el nombre", MensajeErr);
@@ -46,16 +46,27 @@ export const handleSubmitChat = async (
     }
 
     try {
-        const responseRegister = await axios.post(`${api}/chat-gpt`, { name, description, budget, objetive });
+        const userSession = localStorage.getItem("USER_SESSION");
+        let email = '';
+    
+        if (userSession) {
+            const userData = JSON.parse(userSession);
+            email = userData.email; 
+        }
+    
+        const responseRegister = await axios.post(`${api}/chat-gpt`, { name, description, budget, objetive, email });
         const mensaje = responseRegister.data.message;
-        mostrarMensaje(mensaje, MensajeAct);
-        resetForm();
+        animateText(mensaje);
         return true;
-    } catch (error: any) {
-        const message = error.response?.data.message;
-        mostrarMensaje(message, MensajeErr);
+    } catch (error) {
+        if (error instanceof Error) {
+            const message = (error as any).response?.data.message;
+            console.error("Error al generar la propuesta:", message);
+            mostrarMensaje(message, MensajeErr);
+        } else {
+            console.error("Error desconocido:", error);
+        }
         resetForm();
         return false;
-    }
-
+    }    
 };
