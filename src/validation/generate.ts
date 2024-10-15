@@ -101,3 +101,39 @@ export const handleSubmitEmailChat = async (
     }
 
 };
+
+export async function obtenerPropuestas() {
+    try {
+        const userSession = localStorage.getItem("USER_SESSION");
+        let emailUser = '';
+
+        if (userSession) {
+            const userData = JSON.parse(userSession);
+            emailUser = userData.email;
+        }
+
+        const response = await axios.get(`${api}/chat-gpt/${emailUser}`);
+        return response.data;
+    } catch (error) {
+        throw error;
+    }
+}
+
+export function handleClickEl(cate: any) {
+    const id = cate.id;
+    const MensajeNegToast = document.getElementById("toast-negative");
+
+    axios
+        .delete(`${api}/chat-gpt/${id}`)
+        .then((response) => {
+            console.log(response);
+            window.location.reload();
+        })
+        .catch((error) => {
+            if (error.response) {
+                mostrarMensaje(error.response.data.error, MensajeNegToast);
+            }
+        });
+}
+
+
