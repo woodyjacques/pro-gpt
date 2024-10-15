@@ -1,6 +1,6 @@
 import { FormEvent, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { handleSubmitChat } from "../validation/generate";
+import { handleSubmitChat, handleSubmitEmailChat } from "../validation/generate";
 import jsPDF from "jspdf";
 
 function Generate() {
@@ -34,6 +34,7 @@ function Generate() {
     const [budget, setBudget] = useState("");
     const [objetive, setObjetive] = useState("");
     const [isLoading, setIsLoading] = useState(false);
+    const [isLoading1, setIsLoading1] = useState(false);
     const [displayedText, setDisplayedText] = useState("");
     const [recipientEmail, setRecipientEmail] = useState("");
     const [isSendModalOpen, setIsSendModalOpen] = useState(false);
@@ -103,10 +104,12 @@ function Generate() {
         setRecipientEmail("");
     };
 
-    const handleSendEmail = (event: FormEvent) => {
+    const handleSendEmail = async (event: FormEvent) => {
         event.preventDefault();
-        alert(`Enviando propuesta a ${recipientEmail} con el siguiente contenido:\n${displayedText}`);
-        closeSendModal();
+        setIsLoading1(true);
+        await handleSubmitEmailChat(displayedText, recipientEmail);
+        setIsSendModalOpen(!isSendModalOpen);
+        setIsLoading1(false);
     };
 
     return (
@@ -170,12 +173,17 @@ function Generate() {
                             </button>
                             <h3 className="text-xl text-white font-bold mb-4">Enviar Propuesta</h3>
                             <form onSubmit={handleSendEmail} className="space-y-4">
+                                <p
+                                    id="MensajeActChat"
+                                    className=" hidden text-green-500 text-sm font-medium rounded-lg text-center"
+                                ></p>
+
                                 <div>
                                     <label className="block text-sm font-medium text-white">Correo del destinatario</label>
                                     <input
                                         type="email"
-                                        required
                                         value={recipientEmail}
+                                        required
                                         onChange={(e) => setRecipientEmail(e.target.value)}
                                         className="bg-gray-900 border border-gray-700 text-white text-sm rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 block w-full p-2.5 placeholder-gray-400"
                                         placeholder="ejemplo@correo.com"
@@ -192,7 +200,10 @@ function Generate() {
                                 </div>
                                 <div className="flex justify-end space-x-2">
                                     <button type="button" onClick={closeSendModal} className="px-4 py-2 bg-gray-300 rounded-lg hover:bg-gray-400 transition duration-300 transform hover:scale-105">Cancelar</button>
-                                    <button type="submit" className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition duration-300 transform hover:scale-105">Enviar</button>
+
+                                    <button type="submit" className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition duration-300 transform hover:scale-105" disabled={isLoading1} >
+                                    {isLoading1 ? "Enviando..." : "Enviar"}
+                                    </button>
                                 </div>
                             </form>
                         </div>
@@ -205,6 +216,7 @@ function Generate() {
                     Generar Propuesta
                 </button>
             </div>
+
             {isOpen && (
                 <div
                     id="authentication-modal"
@@ -244,10 +256,6 @@ function Generate() {
                                     id="MensajeErrCat"
                                     className=" hidden text-red-500 text-sm font-medium rounded-lg text-center"
                                 ></p>
-                                <p
-                                    id="MensajeCat"
-                                    className=" hidden text-green-500 text-sm font-medium rounded-lg text-center"
-                                ></p>
                                 <form onSubmit={handleSubmitGpt} className="space-y-6">
                                     <div>
                                         <label className="block mb-2 text-sm font-medium text-white">Nombre del Proyecto</label>
@@ -280,6 +288,7 @@ function Generate() {
                     </div>
                 </div>
             )}
+
         </div>
     );
 }
